@@ -82,8 +82,7 @@ Contribute: Code, docs, testing, or build apps
 
 
 
-Donate: Support via Kaspa: kaspa:qplt4jr2kpfutntrk7m4m8we7hsmtxyyr2823qt050r6pyh2w9tpsp5nmh25e
-
+Donate: Support via Kaspa: kaspa:qyppcj89ldqu0jnc0rcrzv3u0f2405raq2nnha9ptqqtfylaf7laaccqt85umkl
 
 
 Community: Join discussions and share ideas
