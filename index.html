@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">    <title>KasOS - Desktop Environment</title>
+    <link rel="stylesheet" href="styles_clean.css">
+    <link rel="stylesheet" href="start-menu.css">
+    <link rel="stylesheet" href="styles/ai-components.css">
+    <link rel="stylesheet" href="styles/dex-styles.css">
+    <script src="wallpapers.js"></script>
+    <!-- Load kaspa-wasm for direct blockchain integration -->
+    <script src="https://cdn.jsdelivr.net/npm/kaspa-wasm@latest/dist/kaspa-wasm.min.js"></script>
+    <!-- Simple crypto library loading status -->
+    <script>
+        window.CRYPTO_LIBRARIES_LOADED = false;
+        window.CRYPTO_DETECTION_COUNT = 0;
+    </script>
+    
+    <!-- Load crypto libraries using working IIFE builds -->
+    <script>
+        // Use a different approach: load pre-built browser bundles
+        const cryptoLibraries = [
+            {
+                name: 'secp256k1',
+                url: 'https://bundle.run/@noble/secp256k1@2.0.0',
+                globalName: 'nobleSecp256k1'
+            },
+            {
+                name: 'bech32', 
+                url: 'https://bundle.run/@scure/bech32@1.1.4',
+                globalName: 'scureBech32'
+            },
+            {
+                name: 'bip39',
+                url: 'https://bundle.run/@scure/bip39@1.2.1', 
+                globalName: 'scureBip39'
+            }
+        ];
+        
+        let loadedLibraries = 0;
+        const totalLibraries = cryptoLibraries.length;
+        
+        function loadLibrary(lib) {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = lib.url;
+                script.onload = () => {
+                    console.log(`✅ Loaded ${lib.name} from bundle.run`);
+                    loadedLibraries++;
+                    // Set standardized global name
+                    if (window[lib.globalName]) {
+                        window[lib.name] = window[lib.globalName];
+                    }
+                    resolve(true);
+                };
+                script.onerror = () => {
+                    console.warn(`❌ Failed to load ${lib.name} from bundle.run`);
+                    resolve(false);
+                };
+                document.head.appendChild(script);
+            });
+        }
+        
+        // Load all libraries
+        Promise.all(cryptoLibraries.map(loadLibrary)).then((results) => {
+            const successCount = results.filter(Boolean).length;
+            console.log(`� Crypto libraries loaded: ${successCount}/${totalLibraries}`);
+            
+            window.CRYPTO_LIBRARIES_LOADED = successCount >= 2;
+            window.CRYPTO_DETECTION_COUNT = successCount;
+            
+            // Trigger ready event
+            setTimeout(() => {
+                window.dispatchEvent(new CustomEvent('cryptoReady'));
+            }, 100);
+        });
+    </script>
+    
+    <!-- Simplified crypto detection -->
+    <script>
+        function detectLoadedCryptoLibraries() {
+            console.log('🔍 Detecting loaded crypto libraries...');
+            
+            const libraries = {
+                secp256k1: window.secp256k1 || window.nobleSecp256k1,
+                bech32: window.bech32 || window.scureBech32,
+                bip39: window.bip39 || window.scureBip39
+            };
+            
+            let detectedCount = 0;
+            for (const [name, lib] of Object.entries(libraries)) {
+                if (lib) {
+                    console.log(`✅ Found ${name} library`);
+                    window[name] = lib; // Standardize naming
+                    detectedCount++;
+                } else {
+                    console.log(`⚠️ ${name} library not found`);
+                }
+            }
+            
+            window.CRYPTO_LIBRARIES_LOADED = detectedCount >= 2;
+            window.CRYPTO_DETECTION_COUNT = detectedCount;
+            
+            console.log(`🎯 Detection complete: ${detectedCount}/3 libraries available`);
+            return detectedCount;
+        }
+        
+        // Listen for crypto ready event and run detection
+        window.addEventListener('cryptoReady', function() {
+            setTimeout(detectLoadedCryptoLibraries, 100);
+        });
+        
+        // Also run detection on DOM load as fallback
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (!window.CRYPTO_LIBRARIES_LOADED) {
+                    detectLoadedCryptoLibraries();
+                }
+            }, 2000);
+        });
+    </script>
+    
+    <!-- Crypto initialization listener -->
+    <script>
+        // Listen for crypto ready event
+        window.addEventListener('cryptoReady', function() {
+            console.log('🔐 Cryptographic libraries are ready for use');
+        });
+        
+        // Fallback check on DOMContentLoaded
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                if (!window.CRYPTO_LIBRARIES_LOADED) {
+                    console.warn('⚠️ Cryptographic libraries may not be fully loaded');
+                }
+            }, 1000);
+        });
+    </script>
+    <!-- Load Kasia Direct cipher integration helper -->
+    <script src="kasia-direct-cipher.js"></script>
+    
+    <!-- Kasia Security Helper for enhanced security features -->
+    <script src="kasia-security-helper.js"></script>
+    
+    <!-- Quick crypto test -->
+    <script src="quick-crypto-test.js"></script>
+    <!-- Load standalone cryptographic implementation (no external dependencies) -->
+    <script src="kasia-crypto-standalone.js"></script>
+
+    <!-- Initialize standalone crypto system -->
+    <script>
+        // Initialize the standalone crypto system
+        function initStandaloneCrypto() {
+            console.log('🔐 Initializing Kasia Standalone Crypto System...');
+            
+            // Create global crypto instance
+            if (window.KasiaStandaloneCrypto) {
+                window.kasiaStandaloneCrypto = new window.KasiaStandaloneCrypto();
+                
+                // Set compatibility flags
+                window.CRYPTO_LIBRARIES_LOADED = true;
+                window.CRYPTO_DETECTION_COUNT = 4; // All features available
+                
+                console.log('✅ Standalone crypto system initialized');
+                console.log('✅ All cryptographic features available');
+                console.log('✅ No external dependencies required');
+                
+                // Trigger ready event
+                window.dispatchEvent(new CustomEvent('cryptoReady'));
+                
+                return true;
+            } else {
+                console.error('❌ Failed to initialize standalone crypto system');
+                window.CRYPTO_LIBRARIES_LOADED = false;
+                window.CRYPTO_DETECTION_COUNT = 0;
+                return false;
+            }
+        }
+        
+        // Initialize when DOM loads
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => {
+                const success = initStandaloneCrypto();
+                if (success) {
+                    console.log('🎉 Crypto system ready - using standalone implementation');
+                } else {
+                    console.log('⚠️ Crypto system initialization failed');
+                }
+            }, 100);
+        });
+    </script>
+    <!-- DEPRECATED: External crypto library loading (kept for fallback) -->
+    <!--
+    <script>
+        // Deprecated: External crypto library loading
+        // This section is kept for fallback purposes only.
+        
+        // Initialize crypto detection
+        detectLoadedCryptoLibraries();
+        
+        // Fallback to external libraries if standalone fails
+        window.addEventListener('cryptoReady', function() {
+            if (!window.CRYPTO_LIBRARIES_LOADED) {
+                console.log('🔄 Falling back to external crypto libraries...');
+                
+                // Re-attempt to load external libraries
+                Promise.all(cryptoLibraries.map(loadLibrary)).then((results) => {
+                    const successCount = results.filter(Boolean).length;
+                    window.CRYPTO_LIBRARIES_LOADED = successCount >= 2;
+                    window.CRYPTO_DETECTION_COUNT = successCount;
+                    
+                    console.log(`🔄 Retried loading crypto libraries: ${successCount}/${totalLibraries}`);
+                });
+            }
+        });
+    </script>
+    -->
+</head>
+<body>    <!-- Login Screen -->
+    <div id="loginScreen" class="login-screen">
+        <div class="login-container">
+            <h1>KasOS</h1>
+              <!-- Wallet Login Section -->
+            <div id="walletLogin" class="wallet-login-section">
+                <h3>🔐 Wallet Authentication</h3>
+                <button type="button" id="walletLoginBtn" class="wallet-login-btn">
+                    💰 Connect with Kasware Wallet
+                </button>
+                <div id="walletStatus" class="wallet-status"></div>
+                <div id="walletAddress" class="wallet-address"></div>
+            </div>
+            <!-- Traditional Login -->
+            <div id="traditionalLogin" class="traditional-login-section">
+                <form class="login-form" onsubmit="return false;">
+                    <input type="text" id="username" placeholder="Username" required autocomplete="username">
+                    <input type="password" id="password" placeholder="Password" required autocomplete="current-password">
+                    <button type="button" id="loginBtn">Login</button>
+                    <button type="button" id="registerBtn">Register</button>
+                </form>
+            </div>
+            <!--
+                KasOS & KasOS is open source software licensed under the MIT License.
+            See LICENSE file for details.
+            https://opensource.org/licenses/MIT
+            -->
+    
+            <div id="loginError" class="error-message"></div>
+        </div>
+    </div>
+
+    <!-- Desktop Environment -->
+    <div id="desktop" class="desktop hidden">
+        <!-- Desktop Icons -->
+        <script>
+            // Initialize wallpaper when desktop becomes visible
+            document.addEventListener('DOMContentLoaded', function() {
+                const desktop = document.getElementById('desktop');
+                const observer = new MutationObserver(function(mutations) {
+                    mutations.forEach(function(mutation) {
+                        if (mutation.type === 'attributes' && mutation.attributeName === 'class') {
+                            if (!desktop.classList.contains('hidden')) {
+                                // Desktop is now visible, apply wallpaper
+                                if (typeof initWallpaper === 'function') {
+                                    initWallpaper();
+                                }
+                                observer.disconnect();
+                            }
+                        }
+                    });
+                });
+                observer.observe(desktop, { attributes: true });
+            });
+        </script>
+        <div class="desktop-icons">
+            <div class="desktop-icon" data-app="texteditor">
+                <div class="icon">📝</div>
+                <span>Text Editor</span>
+            </div>
+            <div class="desktop-icon" data-app="codeeditor">
+                <div class="icon">💻</div>
+                <span>Code Editor</span>
+            </div>
+            <div class="desktop-icon" data-app="notes">
+                <div class="icon">📄</div>
+                <span>Notes</span>
+            </div>
+            <div class="desktop-icon" data-app="terminal">
+                <div class="icon">💻</div>
+                <span>Terminal</span>
+            </div>
+            <div class="desktop-icon" data-app="music">
+                <div class="icon">🎵</div>
+                <span>Music Player</span>
+            </div>            
+            <div class="desktop-icon" data-app="fileexplorer">
+                <div class="icon">📁</div>
+                <span>File Explorer</span>
+            </div>            
+            <div class="desktop-icon" data-app="error-tracker">
+                <div class="icon">🔍</div>
+                <span>Error Tracker</span>
+            </div>            
+            <div class="desktop-icon" data-app="error-tester">
+                <span>Error Tester</span>
+            </div>            
+            <div class="desktop-icon" data-app="settings">
+                <div class="icon">⚙️</div>
+                <span>Settings</span>
+            </div>
+            <div class="desktop-icon" data-app="appmanager">
+                <div class="icon">📦</div>
+                <span>App Manager</span>
+            </div>
+            <div class="desktop-icon" data-app="kaswallet">
+                <div class="icon">💰</div>
+                <span>KasWallet</span>
+            </div>
+            <div class="desktop-icon" data-app="kaspa-explorer">
+                <div class="icon">👁️</div>
+                <span>Kaspa Explorer</span>
+            </div>
+            <div class="desktop-icon" data-app="whitepaper">
+                <div class="icon">📄</div>
+                <span>Whitepaper</span>
+            </div>
+            <div class="desktop-icon" data-app="appstore">
+                <div class="icon">🏪</div>
+                <span>App Store</span>
+            </div>
+            <div class="desktop-icon" data-app="kasia-direct">
+                <div class="icon">⚡</div>
+                <span>Kasia Messenger</span>
+            </div>
+
+            <div class="desktop-icon" data-app="krc20-dex">
+                <div class="icon">🔄</div>
+                <span>KRC20 DEX</span>
+            </div>
+        </div>        <!-- Taskbar -->
+        <div class="taskbar">
+            <button class="start-button" id="startButton">Start</button>
+            <div class="task-list" id="taskList"></div>
+            <div class="desktop-switcher">
+                <button class="desktop-btn active" data-desktop="1">1</button>
+                <button class="desktop-btn" data-desktop="2">2</button>
+                <button class="desktop-btn" data-desktop="3">3</button>
+            </div>
+            <div class="clock" id="clock"></div>
+        </div><!-- Start Menu -->
+        <div class="start-menu hidden" id="startMenu">
+            <div class="start-header">
+                <div class="user-profile">
+                    <div class="user-avatar">👤</div>
+                    <span id="currentUser">User</span>
+                </div>
+                <button id="logoutBtn">Logout</button>
+            </div>
+            <div class="start-search">
+                <input type="text" id="appSearch" placeholder="Search apps...">
+            </div>
+            <div class="start-menu-content">
+                <div class="start-menu-section">
+                    <h3>Productivity</h3>
+                    <div class="start-apps-group">
+                        <div class="start-app" data-app="texteditor" data-category="productivity">📝 Text Editor</div>
+                        <div class="start-app" data-app="codeeditor" data-category="productivity">💻 Code Editor</div>
+                        <div class="start-app" data-app="notes" data-category="productivity">📄 Notes</div>
+                        <div class="start-app" data-app="terminal" data-category="productivity">💻 Terminal</div>
+                    </div>
+                </div>
+                <div class="start-menu-section">
+                    <h3>Media & Files</h3>
+                    <div class="start-apps-group">
+                        <div class="start-app" data-app="music" data-category="media">🎵 Music Player</div>
+                        <div class="start-app" data-app="fileexplorer" data-category="media">📁 File Explorer</div>
+                    </div>
+                </div>                <div class="start-menu-section">
+                    <h3>Communication & AI</h3>                    
+                    <div class="start-apps-group">
+                        <div class="start-app" data-app="kasia-direct" data-category="communication">⚡ Kasia Messenger</div>
+                        <div class="start-app" data-app="securechat" data-category="communication">🔒 Secure Chat</div>
+                        <div class="start-app" data-app="ai-assistant" data-category="ai">🤖 AI Assistant</div>
+                        <div class="start-app" data-app="krc20-dex" data-category="finance">🔄 KRC20 DEX</div>
+                    </div>
+                </div>
+                <div class="start-menu-section">
+                    <h3>System & Utilities</h3>                    
+                    <div class="start-apps-group">
+                        <div class="start-app" data-app="error-tracker" data-category="system">� Error Tracker</div>
+                        <div class="start-app" data-app="error-tester" data-category="system">🐛 Error Tester</div>
+                        <div class="start-app" data-app="settings" data-category="system">⚙️ Settings</div>
+                        <div class="start-app" data-app="appmanager" data-category="system">� App Manager</div>
+                        <div class="start-app" data-app="kaswallet" data-category="system">� KasWallet</div>
+                        <div class="start-app" data-app="whitepaper" data-category="system">📄 Whitepaper</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Window Template -->
+    <div class="window-template hidden">
+        <div class="window" data-window-id="">
+            <div class="window-header">
+                <span class="window-title"></span>
+                <div class="window-controls">
+                    <button class="minimize-btn">−</button>
+                    <button class="maximize-btn">□</button>
+                    <button class="close-btn">×</button>
+                </div>
+            </div>
+            <div class="window-content"></div>
+        </div>
+    </div>
+    <!-- Application Import/Export -->
+    <div class="app-manager hidden" id="appManager">
+        <h3>Application Manager</h3>
+        <div class="app-section">
+            <h4>Create New Application</h4>
+            <button id="appTemplateDownloadBtn" style="background: #28a745; color: white; border: none; padding: 8px 16px; border-radius: 4px; cursor: pointer; margin-bottom: 10px;">📥 Download Template</button>
+        </div>
+        <div class="app-section">
+            <h4>Import Application</h4>
+            <input type="file" id="appFileInput" accept=".js">
+            <button id="importAppBtn">Import App</button>
+        </div>
+        <div class="app-section">
+            <h4>Installed Applications</h4>
+            <div id="installedApps"></div>
+        </div>
+    </div>
+    <!-- Version Control System - Load early -->
+    <script src="version-control.js"></script>
+    <script src="version-display.js"></script>
+    
+    <!-- Ensure Error System is loaded before AI Agent and AI Assistant -->
+    <script src="applications/error-tracker.js"></script>
+    <script src="error-system.js"></script>
+    <script src="core/ai-agent.js"></script>
+    <script src="applications/ai-assistant.js"></script>
+    <script src="diagnostics.js"></script>
+    <script src="start-menu-fixes.js"></script>
+    <script src="start-menu.js"></script>
+    <script src="scripts_new.js"></script>
+    <script src="login-persistence.js"></script>
+    <script src="wallet-auth.js"></script>
+    <script src="applications/kaswallet.js"></script>
+    <script src="applications/settings.js"></script>
+    <script src="applications/whitepaper.js"></script>
+    <script src="applications/kasia-direct.js"></script>
+    <!--
+        KasOS & KasOS is open source software licensed under the MIT License.
+        See LICENSE file for details.
+        https://opensource.org/licenses/MIT
+    -->
+    <footer id="footer" style="text-align:center; margin: 20px 0; color: #888; display: flex; justify-content: space-between; align-items: center; padding: 0 20px;">
+        <span>Open Source: <a href="https://opensource.org/licenses/MIT" target="_blank">MIT License</a></span>
+        <div id="version-container" style="display: flex; align-items: center; gap: 10px;"></div>
+    </footer>
+    
+    <!-- Initialize version display after everything loads -->
+    <script>
+        window.addEventListener('load', function() {
+            // Add version badge to footer
+            if (window.KasOSVersionDisplay && window.KasOSVersionControl) {
+                const versionContainer = document.getElementById('version-container');
+                if (versionContainer) {
+                    const badge = window.KasOSVersionDisplay.createVersionBadge({
+                        showEnvironment: true,
+                        compact: true
+                    });
+                    badge.style.fontSize = '11px';
+                    badge.style.opacity = '0.8';
+                    versionContainer.appendChild(badge);
+                    
+                    // Add system diagnostics link
+                    const diagnosticsLink = document.createElement('a');
+                    diagnosticsLink.href = '#';
+                    diagnosticsLink.textContent = 'System Info';
+                    diagnosticsLink.style.fontSize = '11px';
+                    diagnosticsLink.style.color = '#888';
+                    diagnosticsLink.style.textDecoration = 'none';
+                    diagnosticsLink.onclick = function(e) {
+                        e.preventDefault();
+                        window.KasOSVersionDisplay.showVersionModal();
+                    };
+                    versionContainer.appendChild(diagnosticsLink);
+                }
+            }
+        });
+    </script>
+</body>
+</html>

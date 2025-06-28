@@ -1,0 +1,263 @@
+/* Enhanced Start Menu Styles */
+.start-menu {
+    position: absolute;
+    bottom: 50px;
+    left: 0;
+    width: 350px;
+    max-height: 600px;
+    background: rgba(30, 30, 30, 0.95);
+    border-radius: 8px;
+    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3);
+    display: flex;
+    flex-direction: column;
+    color: #fff;
+    backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    z-index: 9999;
+    overflow: hidden;
+    transition: transform 0.3s ease, opacity 0.3s ease;
+    transform-origin: bottom left;
+}
+
+.start-menu.hidden {
+    transform: scale(0.95);
+    opacity: 0;
+    pointer-events: none;
+}
+
+.start-menu.show {
+    animation: menuAppear 0.25s forwards;
+}
+
+@keyframes menuAppear {
+    from {
+        transform: scale(0.95);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+/* Header with user profile */
+.start-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px;
+    background: rgba(40, 40, 40, 0.7);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+}
+
+.user-avatar {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #6a11cb 0%, #2575fc 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 10px;
+    font-size: 20px;
+}
+
+#currentUser {
+    font-weight: 500;
+    font-size: 16px;
+}
+
+#logoutBtn {
+    background-color: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: none;
+    padding: 5px 12px;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+#logoutBtn:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+}
+
+/* Search section */
+.start-search {
+    padding: 10px 15px;
+    background: rgba(20, 20, 20, 0.5);
+}
+
+#appSearch {
+    width: 100%;
+    padding: 8px 12px;
+    border-radius: 4px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+#appSearch:focus {
+    border-color: rgba(255, 255, 255, 0.3);
+    box-shadow: 0 0 0 2px rgba(66, 153, 225, 0.2);
+}
+
+#appSearch::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+/* Content area */
+.start-menu-content {
+    flex: 1;
+    overflow-y: auto;
+    padding: 10px;
+}
+
+.start-menu-section {
+    margin-bottom: 15px;
+}
+
+.start-menu-section h3 {
+    font-size: 14px;
+    margin: 5px 5px 8px;
+    color: rgba(255, 255, 255, 0.7);
+    font-weight: 500;
+}
+
+.start-apps-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 8px;
+}
+
+.start-app {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.2s, transform 0.1s;
+    background-color: rgba(255, 255, 255, 0.03);
+}
+
+.start-app:hover {
+    background-color: rgba(255, 255, 255, 0.1);
+    transform: translateY(-2px);
+}
+
+.start-app:active {
+    transform: translateY(0);
+}
+
+/* Make certain app categories have unique colors */
+.start-app[data-category="productivity"] {
+    border-left: 3px solid #4299e1;
+}
+
+.start-app[data-category="media"] {
+    border-left: 3px solid #ed8936;
+}
+
+.start-app[data-category="system"] {
+    border-left: 3px solid #9f7aea;
+}
+
+/* Category filters */
+.category-filters {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 5px;
+    margin-bottom: 15px;
+    padding: 5px;
+    border-radius: 5px;
+    background: rgba(0, 0, 0, 0.15);
+}
+
+.category-filter {
+    background: rgba(255, 255, 255, 0.05);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 4px;
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.category-filter:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+}
+
+.category-filter.active {
+    background: rgba(66, 153, 225, 0.6);
+    color: white;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+}
+
+/* Footer */
+.start-menu-footer {
+    padding: 10px 15px;
+    display: flex;
+    justify-content: flex-end;
+    background: rgba(20, 20, 20, 0.7);
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+}
+
+.quick-controls {
+    display: flex;
+    gap: 10px;
+}
+
+.quick-controls button {
+    background: rgba(0, 0, 0, 0.2);
+    color: white;
+    border: none;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 18px;
+    transition: background 0.2s, transform 0.1s;
+}
+
+.quick-controls button:hover {
+    background: rgba(255, 255, 255, 0.15);
+    transform: scale(1.05);
+}
+
+/* Scrollbar styling */
+.start-menu-content::-webkit-scrollbar {
+    width: 6px;
+}
+
+.start-menu-content::-webkit-scrollbar-track {
+    background: rgba(0, 0, 0, 0.1);
+}
+
+.start-menu-content::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.1);
+    border-radius: 3px;
+}
+
+.start-menu-content::-webkit-scrollbar-thumb:hover {
+    background: rgba(255, 255, 255, 0.2);
+}
+
+/* Search result highlighting */
+.start-app .highlight {
+    background-color: rgba(255, 255, 102, 0.3);
+    color: #ffffff;
+    font-weight: bold;
+    padding: 0 2px;
+    border-radius: 2px;
+}

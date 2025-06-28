@@ -1,0 +1,345 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Kaspa API-Compliant Address Test</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            margin: 20px;
+            background: #f5f5f5;
+        }
+        .container {
+            max-width: 1000px;
+            margin: 0 auto;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+        .test-section {
+            margin: 20px 0;
+            padding: 15px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            background: #f9f9f9;
+        }
+        .address-item {
+            margin: 10px 0;
+            padding: 10px;
+            background: white;
+            border-radius: 5px;
+            border-left: 4px solid #007acc;
+        }
+        .valid { border-left-color: #28a745; }
+        .invalid { border-left-color: #dc3545; }
+        .api-test { 
+            background: #e7f3ff; 
+            border: 1px solid #007acc;
+            padding: 15px;
+            margin: 15px 0;
+            border-radius: 5px;
+        }
+        button {
+            background: #007acc;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px 10px 10px 0;
+        }
+        button:hover { background: #005a9e; }
+        .log { 
+            background: #1e1e1e; 
+            color: #fff; 
+            padding: 15px; 
+            border-radius: 5px; 
+            margin: 10px 0;
+            font-family: 'Consolas', 'Monaco', 'Courier New', monospace;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+        .warning {
+            background: #fff3cd;
+            border: 1px solid #ffeaa7;
+            color: #856404;
+            padding: 15px;
+            border-radius: 5px;
+            margin: 15px 0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🎯 Kaspa API-Compliant Address Test</h1>
+        
+        <div class="warning">
+            <strong>⚠️ Important:</strong> This test validates address format compliance with the Kaspa API regex: 
+            <code>^kaspa:[a-z0-9]{61,63}$</code> for mainnet and similar for testnet.
+        </div>
+
+        <div class="test-section">
+            <h3>🧪 Address Generation & API Format Validation</h3>
+            <button onclick="generateAndTestAddresses()">Generate & Test New Addresses</button>
+            <button onclick="testAPIFormat()">Test API Format Requirements</button>
+            <button onclick="runCryptoSelfTest()">Run Full Crypto Self-Test</button>
+            <button onclick="clearResults()">Clear Results</button>
+            
+            <div id="results"></div>
+        </div>
+
+        <div class="api-test">
+            <h3>🌐 Mock API Test</h3>
+            <p>This simulates testing the generated addresses against the Kaspa API regex validation.</p>
+            <button onclick="testAgainstMockAPI()">Test Against Mock API</button>
+            <div id="api-results"></div>
+        </div>
+
+        <div class="log" id="console-log">
+            <div>Console output will appear here...</div>
+        </div>
+    </div>
+
+    <!-- Load the enhanced crypto library -->
+    <script src="kasia-security-helper.js"></script>
+    <script src="kasia-crypto-standalone.js"></script>
+
+    <script>
+        // Capture console output
+        const originalLog = console.log;
+        const originalWarn = console.warn;
+        const originalError = console.error;
+        
+        function logToDiv(message, type = 'log') {
+            const logDiv = document.getElementById('console-log');
+            const timestamp = new Date().toLocaleTimeString();
+            const color = type === 'error' ? '#ff6b6b' : type === 'warn' ? '#ffa500' : '#4caf50';
+            logDiv.innerHTML += `<div style="color: ${color}">[${timestamp}] ${message}</div>`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+        
+        console.log = function(...args) {
+            originalLog.apply(console, args);
+            logToDiv(args.join(' '), 'log');
+        };
+        
+        console.warn = function(...args) {
+            originalWarn.apply(console, args);
+            logToDiv('⚠️ ' + args.join(' '), 'warn');
+        };
+        
+        console.error = function(...args) {
+            originalError.apply(console, args);
+            logToDiv('❌ ' + args.join(' '), 'error');
+        };
+
+        // Initialize crypto
+        let crypto;
+        
+        async function initCrypto() {
+            if (!crypto) {
+                console.log('🔧 Initializing Kasia Standalone Crypto...');
+                crypto = new KasiaStandaloneCrypto();
+                await crypto.init();
+                console.log('✅ Crypto initialized successfully');
+            }
+            return crypto;
+        }
+
+        async function generateAndTestAddresses() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Generating addresses...</p>';
+            
+            try {
+                const cryptoLib = await initCrypto();
+                let html = '<h4>📋 Generated Addresses</h4>';
+                
+                // Test different derivation types and networks
+                const tests = [
+                    { derivation: 'standard', network: 'mainnet' },
+                    { derivation: 'legacy', network: 'mainnet' },
+                    { derivation: 'standard', network: 'testnet' },
+                    { derivation: 'legacy', network: 'testnet' }
+                ];
+                
+                for (const test of tests) {
+                    const privateKey = cryptoLib.generatePrivateKey();
+                    const address = await cryptoLib.generateKaspaAddress(privateKey, test.derivation, test.network);
+                    const isValid = cryptoLib.isValidKaspaAddress(address);
+                    const apiCompliant = testAPICompliance(address, test.network);
+                    
+                    const status = (isValid && apiCompliant) ? 'valid' : 'invalid';
+                    const statusText = (isValid && apiCompliant) ? '✅ Valid & API Compliant' : '❌ Invalid';
+                    
+                    html += `
+                        <div class="address-item ${status}">
+                            <strong>${test.network} (${test.derivation}):</strong><br>
+                            <code>${address}</code><br>
+                            <small>Length: ${address.length} | ${statusText}</small>
+                        </div>
+                    `;
+                }
+                
+                results.innerHTML = html;
+                
+            } catch (error) {
+                results.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+                console.error('Address generation failed:', error);
+            }
+        }
+
+        function testAPICompliance(address, networkType = 'mainnet') {
+            // Test against API regex: ^kaspa:[a-z0-9]{61,63}$ for mainnet
+            if (networkType === 'mainnet') {
+                const regex = /^kaspa:[a-z0-9]{61,63}$/;
+                return regex.test(address);
+            } else {
+                // Testnet: kaspatest:[a-z0-9]{61,65}
+                const regex = /^kaspatest:[a-z0-9]{61,65}$/;
+                return regex.test(address);
+            }
+        }
+
+        async function testAPIFormat() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Testing API format requirements...</p>';
+            
+            try {
+                const cryptoLib = await initCrypto();
+                let html = '<h4>🌐 API Format Compliance Test</h4>';
+                
+                // Generate 5 addresses and test each one
+                for (let i = 0; i < 5; i++) {
+                    const privateKey = cryptoLib.generatePrivateKey();
+                    const address = await cryptoLib.generateKaspaAddress(privateKey, 'standard', 'mainnet');
+                    
+                    const apiCompliant = testAPICompliance(address, 'mainnet');
+                    const addressPart = address.substring(6); // Remove 'kaspa:'
+                    
+                    const status = apiCompliant ? 'valid' : 'invalid';
+                    const statusText = apiCompliant ? '✅ API Compliant' : '❌ API Non-Compliant';
+                    
+                    html += `
+                        <div class="address-item ${status}">
+                            <strong>Test ${i + 1}:</strong><br>
+                            <code>${address}</code><br>
+                            <small>Address part length: ${addressPart.length} | Total: ${address.length} | ${statusText}</small>
+                        </div>
+                    `;
+                }
+                
+                results.innerHTML = html;
+                
+            } catch (error) {
+                results.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+                console.error('API format test failed:', error);
+            }
+        }
+
+        async function testAgainstMockAPI() {
+            const apiResults = document.getElementById('api-results');
+            apiResults.innerHTML = '<p>🔄 Testing against mock API...</p>';
+            
+            try {
+                const cryptoLib = await initCrypto();
+                const privateKey = cryptoLib.generatePrivateKey();
+                const address = await cryptoLib.generateKaspaAddress(privateKey, 'standard', 'mainnet');
+                
+                // Simulate API call
+                const apiResponse = await simulateKaspaAPICall(address);
+                
+                apiResults.innerHTML = `
+                    <h4>📡 Mock API Response</h4>
+                    <div class="address-item ${apiResponse.valid ? 'valid' : 'invalid'}">
+                        <strong>Address:</strong> <code>${address}</code><br>
+                        <strong>Status:</strong> ${apiResponse.status}<br>
+                        <strong>Valid:</strong> ${apiResponse.valid ? '✅ Yes' : '❌ No'}<br>
+                        <strong>Balance:</strong> ${apiResponse.balance} KAS<br>
+                        ${apiResponse.error ? `<strong>Error:</strong> ${apiResponse.error}` : ''}
+                    </div>
+                `;
+                
+            } catch (error) {
+                apiResults.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+                console.error('Mock API test failed:', error);
+            }
+        }
+
+        async function simulateKaspaAPICall(address) {
+            // Simulate API validation
+            const isAPICompliant = testAPICompliance(address, 'mainnet');
+            
+            if (!isAPICompliant) {
+                return {
+                    valid: false,
+                    status: '422 Unprocessable Entity',
+                    error: 'Address format validation failed',
+                    balance: null
+                };
+            }
+            
+            // Simulate successful API response for valid addresses
+            return {
+                valid: true,
+                status: '200 OK',
+                balance: '0.00000000', // New addresses have zero balance
+                transactions: []
+            };
+        }
+
+        async function runCryptoSelfTest() {
+            const results = document.getElementById('results');
+            results.innerHTML = '<p>🔄 Running full crypto self-test...</p>';
+            
+            try {
+                const cryptoLib = await initCrypto();
+                const testResults = await cryptoLib.runSelfTest();
+                
+                let html = '<h4>🧪 Crypto Self-Test Results</h4>';
+                
+                if (testResults.success) {
+                    html += '<p style="color: green;">✅ All tests passed!</p>';
+                    
+                    testResults.results.forEach(result => {
+                        const apiCompliant = testAPICompliance(result.address, result.networkType);
+                        const status = (result.valid && apiCompliant) ? 'valid' : 'invalid';
+                        
+                        html += `
+                            <div class="address-item ${status}">
+                                <strong>${result.networkType} (${result.derivationType}):</strong><br>
+                                <code>${result.address}</code><br>
+                                <small>Valid: ${result.valid ? '✅' : '❌'} | API: ${apiCompliant ? '✅' : '❌'}</small>
+                            </div>
+                        `;
+                    });
+                    
+                    html += `<p><strong>Uniqueness test:</strong> ${testResults.uniquenessTest ? '✅ Passed' : '❌ Failed'}</p>`;
+                    html += `<p><strong>Security features:</strong> ${testResults.securityFeatures ? '✅ Available' : '⚠️ Basic'}</p>`;
+                } else {
+                    html += `<p style="color: red;">❌ Tests failed: ${testResults.error}</p>`;
+                }
+                
+                results.innerHTML = html;
+                
+            } catch (error) {
+                results.innerHTML = `<p style="color: red;">❌ Error: ${error.message}</p>`;
+                console.error('Self-test failed:', error);
+            }
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+            document.getElementById('api-results').innerHTML = '';
+            document.getElementById('console-log').innerHTML = '<div>Console cleared...</div>';
+        }
+
+        // Initialize on page load
+        window.addEventListener('load', () => {
+            console.log('🎯 API-Compliant Address Test Page Loaded');
+            console.log('📋 Ready to test Kaspa address generation and API compliance');
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,2230 @@
+// This page serves as the reference for Crypto APIs
+
+==========================================================
+Coin Gecko APIs for Crypto, NFT, Ethereum & Bitcoin Price APICrypto, NFT, Ethereum & Bitcoin Price API
+Endpoint Category	Description
+/simple/*	The simplest & fastest endpoints to call the latest price of crypto assets, by id or contract address.
+/coins/*	Endpoints that return list of coins on CoinGecko, and their respective price, market data, historical data, and metadata (image, descriptions, links, followers, token supply info, etc). More exclusive endpoints are available to discover trending coins, newly added coins and more.
+/contract/*	Works similarly as /coins/* endpoint above, except that it is queried by contract address, instead of api id.
+/asset_platforms	To get the full list of blockchain network supported on CoinGecko.
+/coins/categories/*	To get the full list of categories supported by CoinGecko & its market data, as seen on Categories page.
+/nfts/*	Endpoints that return list of NFT collections on CoinGecko, and their respective floor price, market data, metadata, and historical data.
+/onchain/*	Endpoints that return on-chain market data from DEXes, such as price & volume of any token based on token or pool address. Other data include liquidity pools, OHLCV, and more.
+/exchanges/*	Endpoints that return list of exchanges on CoinGecko, and their respective market data, tickers (trading pairs), metadata, and historical data.
+/derivatives/*	Endpoints that return list of derivative exchanges on CoinGecko, and their respective market data, tickers (trading pairs), and metadata.
+/search/*	To get query search result of coins, categories and exchanges.
+/search/trending/*	To get the current trending search coins on CoinGecko.
+/global/*	To get global crypto data such as current and historical global market cap.
+/companies/*	To get public companies data such as BTC and ETH treasuries.
+==========================================================
+
+
+Kaspa REST-API server
+ 2c89301 
+OAS 3.1
+/openapi.json
+This server is to communicate with kaspa network via REST-API
+
+MIT LICENSE
+Kaspa addresses
+
+
+GET
+/addresses/{kaspaAddress}/balance
+Get Balance From Kaspa Address
+
+Get balance for a given kaspa address
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73
+
+kaspaAddress
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "address": "kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73",
+  "balance": 38240000000
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/addresses/{kaspaAddress}/utxos
+Get Utxos For Address
+
+Lists all open utxo for a given kaspa address
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73
+
+kaspaAddress
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "address": "kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73",
+    "outpoint": {
+      "transactionId": "ef62efbc2825d3ef9ec1cf9b80506876ac077b64b11a39c8ef5e028415444dc9",
+      "index": 0
+    },
+    "utxoEntry": {
+      "amount": [
+        "11501593788"
+      ],
+      "scriptPublicKey": {
+        "scriptPublicKey": "20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac"
+      },
+      "blockDaaScore": "18867232",
+      "isCoinbase": false
+    }
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/addresses/utxos
+Get Utxos For Addresses
+
+Lists all open utxo for a given kaspa address
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "addresses": [
+    "kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73"
+  ]
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "address": "kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73",
+    "outpoint": {
+      "transactionId": "ef62efbc2825d3ef9ec1cf9b80506876ac077b64b11a39c8ef5e028415444dc9",
+      "index": 0
+    },
+    "utxoEntry": {
+      "amount": [
+        "11501593788"
+      ],
+      "scriptPublicKey": {
+        "scriptPublicKey": "20c5629ce85f6618cd3ed1ac1c99dc6d3064ed244013555c51385d9efab0d0072fac"
+      },
+      "blockDaaScore": "18867232",
+      "isCoinbase": false
+    }
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/addresses/{kaspaAddress}/full-transactions
+Get Full Transactions For Address
+
+Get all transactions for a given address from database. And then get their related full transaction data
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73
+
+kaspaAddress
+limit
+integer
+(query)
+maximum: 500
+minimum: 1
+The number of records to get
+
+Default value : 50
+
+50
+offset
+integer
+(query)
+minimum: 0
+The offset from which to get records
+
+Default value : 0
+
+0
+fields
+string
+(query)
+Default value :
+
+fields
+resolve_previous_outpoints
+string
+(query)
+Use this parameter if you want to fetch the TransactionInput previous outpoint details. Light fetches only the adress and amount. Full fetches the whole TransactionOutput and adds it into each TxInput.
+
+Available values : no, light, full
+
+Default value : no
+
+
+no
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "subnetwork_id": "string",
+    "transaction_id": "string",
+    "hash": "string",
+    "mass": "string",
+    "payload": "string",
+    "block_hash": [
+      "string"
+    ],
+    "block_time": 0,
+    "is_accepted": true,
+    "accepting_block_hash": "string",
+    "accepting_block_blue_score": 0,
+    "accepting_block_time": 0,
+    "inputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "previous_outpoint_hash": "string",
+        "previous_outpoint_index": "string",
+        "previous_outpoint_resolved": {
+          "transaction_id": "string",
+          "index": 0,
+          "amount": 0,
+          "script_public_key": "string",
+          "script_public_key_address": "string",
+          "script_public_key_type": "string",
+          "accepting_block_hash": "string"
+        },
+        "previous_outpoint_address": "string",
+        "previous_outpoint_amount": 0,
+        "signature_script": "string",
+        "sig_op_count": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "amount": 0,
+        "script_public_key": "string",
+        "script_public_key_address": "string",
+        "script_public_key_type": "string",
+        "accepting_block_hash": "string"
+      }
+    ]
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/addresses/active
+Get Addresses Active
+
+This endpoint checks if addresses have had any transaction activity in the past. It is specifically designed for HD Wallets to verify historical address activity.
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "addresses": [
+    "kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73"
+  ]
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "address": "string",
+    "active": true
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/addresses/{kaspaAddress}/full-transactions-page
+Get Full Transactions For Address Page
+
+Get all transactions for a given address from database. And then get their related full transaction data
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73
+
+kaspaAddress
+limit
+integer
+(query)
+maximum: 500
+minimum: 1
+The max number of records to get. For paging combine with using 'before/after' from oldest previous result. Use value of X-Next-Page-Before/-After as long as header is present to continue paging. The actual number of transactions returned for each page can be > limit.
+
+Default value : 50
+
+50
+before
+integer
+(query)
+minimum: 0
+Only include transactions with block time before this (epoch-millis)
+
+Default value : 0
+
+0
+after
+integer
+(query)
+minimum: 0
+Only include transactions with block time after this (epoch-millis)
+
+Default value : 0
+
+0
+fields
+string
+(query)
+Default value :
+
+fields
+resolve_previous_outpoints
+string
+(query)
+Use this parameter if you want to fetch the TransactionInput previous outpoint details. Light fetches only the adress and amount. Full fetches the whole TransactionOutput and adds it into each TxInput.
+
+Available values : no, light, full
+
+Default value : no
+
+
+no
+acceptance
+string
+(query)
+Available values : accepted, rejected
+
+
+--
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "subnetwork_id": "string",
+    "transaction_id": "string",
+    "hash": "string",
+    "mass": "string",
+    "payload": "string",
+    "block_hash": [
+      "string"
+    ],
+    "block_time": 0,
+    "is_accepted": true,
+    "accepting_block_hash": "string",
+    "accepting_block_blue_score": 0,
+    "accepting_block_time": 0,
+    "inputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "previous_outpoint_hash": "string",
+        "previous_outpoint_index": "string",
+        "previous_outpoint_resolved": {
+          "transaction_id": "string",
+          "index": 0,
+          "amount": 0,
+          "script_public_key": "string",
+          "script_public_key_address": "string",
+          "script_public_key_type": "string",
+          "accepting_block_hash": "string"
+        },
+        "previous_outpoint_address": "string",
+        "previous_outpoint_amount": 0,
+        "signature_script": "string",
+        "sig_op_count": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "amount": 0,
+        "script_public_key": "string",
+        "script_public_key_address": "string",
+        "script_public_key_type": "string",
+        "accepting_block_hash": "string"
+      }
+    ]
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/addresses/{kaspaAddress}/transactions-count
+Get Transaction Count For Address
+
+Count the number of transactions associated with this address
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqkqkzjvr7zwxxmjxjkmxxdwju9kjs6e9u82uh59z07vgaks6gg62v8707g73
+
+kaspaAddress
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "total": 0,
+  "limit_exceeded": true
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/addresses/names
+Get Addresses Names
+
+Get the name for an address
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "address": "string",
+    "name": "string"
+  }
+]
+No links
+
+GET
+/addresses/{kaspaAddress}/name
+Get Name For Address
+
+Get the name for an address
+
+Parameters
+Try it out
+Name	Description
+kaspaAddress *
+string
+(path)
+pattern: ^kaspa:[a-z0-9]{61,63}$
+Kaspa address as string e.g. kaspa:qqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqqkx9awp4e
+
+kaspaAddress
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "address": "string",
+  "name": "string"
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/addresses/balances
+Get Balances From Kaspa Addresses
+
+Kaspa network info
+
+
+GET
+/info/virtual-chain-blue-score
+Get Virtual Selected Parent Blue Score
+
+Returns the blue score of the sink
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "blueScore": 260890
+}
+No links
+
+GET
+/info/network
+Get Network
+
+
+GET
+/info/blockdag
+Get Blockdag
+
+Get Kaspa BlockDAG information
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "networkName": "kaspa-mainnet",
+  "blockCount": "260890",
+  "headerCount": "2131312",
+  "tipHashes": [
+    "78273854a739e3e379dfd34a262bbe922400d8e360e30e3f31228519a334350a"
+  ],
+  "difficulty": 3870677677777.2,
+  "pastMedianTime": "1656455670700",
+  "virtualParentHashes": [
+    "78273854a739e3e379dfd34a262bbe922400d8e360e30e3f31228519a334350a"
+  ],
+  "pruningPointHash": "5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d",
+  "virtualDaaScore": "19989141",
+  "sink": "366b1cf51146cc002672b79948634751a2914a2cc9e273afe358bdc1ae19dce9"
+}
+No links
+
+GET
+/info/coinsupply
+Get Coinsupply
+
+Get $KAS coin supply information
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "circulatingSupply": "1000900697580640180",
+  "maxSupply": "2900000000000000000"
+}
+No links
+
+GET
+/info/coinsupply/circulating
+Get Circulating Coins
+
+Get circulating amount of $KAS token as numerical value
+
+Parameters
+Try it out
+Name	Description
+in_billion
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+text/plain
+Controls Accept header.
+Example Value
+Schema
+string
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/coinsupply/total
+Get Total Coins
+
+Get total amount of $KAS token as numerical value
+
+Parameters
+Try it out
+Name	Description
+in_billion
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+text/plain
+Controls Accept header.
+Example Value
+Schema
+string
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/kaspad
+Get Kaspad Info
+
+Get some information for kaspad instance, which is currently connected.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "mempoolSize": "1",
+  "serverVersion": "0.12.2",
+  "isUtxoIndexed": true,
+  "isSynced": true,
+  "p2pIdHashed": "36a17cd8644eef34fc7fe4719655e06dbdf117008900c46975e66c35acd09b01"
+}
+No links
+
+GET
+/info/fee-estimate
+Get Fee Estimate
+
+Get fee estimate from Kaspad.
+
+For all buckets, feerate values represent fee/mass of a transaction in sompi/gram units.
+Given a feerate value recommendation, calculate the required fee by taking the transaction mass and multiplying it by feerate: fee = feerate * mass(tx)
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "priorityBucket": {
+    "feerate": 1,
+    "estimatedSeconds": 0.004
+  },
+  "normalBuckets": [
+    {
+      "feerate": 1,
+      "estimatedSeconds": 0.004
+    }
+  ],
+  "lowBuckets": [
+    {
+      "feerate": 1,
+      "estimatedSeconds": 0.004
+    }
+  ]
+}
+No links
+
+GET
+/info/price
+Get Price
+
+Returns the current price for Kaspa in USD.
+
+Parameters
+Try it out
+Name	Description
+stringOnly
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "price": 0.025235
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/blockreward
+Get Blockreward
+
+Returns the current blockreward in KAS/block
+
+Parameters
+Try it out
+Name	Description
+stringOnly
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "blockreward": 12000132
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/halving
+Get Halving
+
+Returns information about chromatic halving
+
+Parameters
+Try it out
+Name	Description
+field
+string
+(query)
+field
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "nextHalvingTimestamp": 1662837270000,
+  "nextHalvingDate": "2022-09-10 19:38:52 UTC",
+  "nextHalvingAmount": 155.123123
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/hashrate
+Get Hashrate
+
+Returns the current hashrate for Kaspa network in TH/s.
+
+Parameters
+Try it out
+Name	Description
+stringOnly
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "hashrate": 12000132
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/hashrate/max
+Get Max Hashrate
+
+Returns the current hashrate for Kaspa network in TH/s.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "hashrate": 12000132,
+  "blockheader": {
+    "hash": "e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887",
+    "timestamp": "1656450648874",
+    "difficulty": 1212312312,
+    "daaScore": "19984482",
+    "blueScore": "18483232"
+  }
+}
+No links
+
+GET
+/info/hashrate/history
+Get Hashrate History
+
+Get historical hashrate samples with optional resolution (default = 1h)
+
+Parameters
+Try it out
+Name	Description
+resolution
+string
+(query)
+Available values : 1h, 3h, 1d, 7d
+
+
+--
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "daaScore": 0,
+    "blueScore": 0,
+    "timestamp": 0,
+    "date_time": "string",
+    "bits": 0,
+    "difficulty": 0,
+    "hashrate_kh": 0
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/info/health
+Health State
+
+Checks node and database health by comparing blue score and sync status. Returns health details or 503 if the database lags by ~10min or no nodes are synced.
+
+Parameters
+Try it out
+No parameters
+
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "kaspadServers": [
+    {
+      "kaspadHost": "string",
+      "serverVersion": "0.12.6",
+      "isUtxoIndexed": true,
+      "isSynced": true,
+      "p2pId": "1231312",
+      "blueScore": 0
+    }
+  ],
+  "database": {
+    "isSynced": true,
+    "blueScore": 0,
+    "blueScoreDiff": 0,
+    "acceptedTxBlockTime": 0,
+    "acceptedTxBlockTimeDiff": 0
+  }
+}
+No links
+
+GET
+/info/marketcap
+Get Marketcap
+
+Get $KAS price and market cap. Price info is from coingecko.com
+
+Parameters
+Try it out
+Name	Description
+stringOnly
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "marketcap": 12000132
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+Kaspa blocks
+
+
+GET
+/blocks/{blockId}
+Get Block
+
+Get block information for a given block id
+
+Parameters
+Try it out
+Name	Description
+blockId *
+string
+(path)
+pattern: [a-f0-9]{64}
+blockId
+includeTransactions
+boolean
+(query)
+Default value : true
+
+
+true
+includeColor
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "header": {
+    "version": 1,
+    "hashMerkleRoot": "e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887",
+    "acceptedIdMerkleRoot": "9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b",
+    "utxoCommitment": "236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c",
+    "timestamp": "1656450648874",
+    "bits": 455233226,
+    "nonce": "14797571275553019490",
+    "daaScore": "19984482",
+    "blueWork": "2d1b3f04f8a0dcd31",
+    "parents": [
+      {
+        "parentHashes": [
+          "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e"
+        ]
+      }
+    ],
+    "blueScore": "18483232",
+    "pruningPoint": "5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d"
+  },
+  "transactions": [
+    {
+      "inputs": [
+        {
+          "previousOutpoint": {
+            "transactionId": "string",
+            "index": 0
+          },
+          "signatureScript": "string",
+          "sigOpCount": 0,
+          "sequence": 0
+        }
+      ],
+      "outputs": [
+        {
+          "amount": 0,
+          "scriptPublicKey": {
+            "scriptPublicKey": "string",
+            "version": 0
+          },
+          "verboseData": {
+            "scriptPublicKeyType": "string",
+            "scriptPublicKeyAddress": "string"
+          }
+        }
+      ],
+      "subnetworkId": "string",
+      "payload": "string",
+      "verboseData": {
+        "transactionId": "string",
+        "hash": "string",
+        "computeMass": 0,
+        "blockHash": "string",
+        "blockTime": 0
+      },
+      "lockTime": 0,
+      "gas": 0,
+      "mass": 0,
+      "version": 0
+    }
+  ],
+  "verboseData": {
+    "hash": "18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699",
+    "difficulty": [
+      4102204523252.94
+    ],
+    "selectedParentHash": "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e",
+    "transactionIds": [
+      "533f8314bf772259fe517f53507a79ebe61c8c6a11748d93a0835551233b3311"
+    ],
+    "blueScore": "18483232",
+    "childrenHashes": [
+      "string"
+    ],
+    "mergeSetBluesHashes": [],
+    "mergeSetRedsHashes": [],
+    "isChainBlock": false
+  },
+  "extra": {
+    "color": "string",
+    "minerAddress": "string",
+    "minerInfo": "string"
+  }
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/blocks
+Get Blocks
+
+Lists block beginning from a low hash (block id).
+
+Parameters
+Try it out
+Name	Description
+lowHash *
+string
+(query)
+pattern: [a-f0-9]{64}
+lowHash
+includeBlocks
+boolean
+(query)
+Default value : false
+
+
+false
+includeTransactions
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "blockHashes": [
+    "44edf9bfd32aa154bfad64485882f184372b64bd60565ba121b42fc3cb1238f3",
+    "18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699",
+    "9a822351cd293a653f6721afec1646bd1690da7124b5fbe87001711406010604",
+    "2fda0dad4ec879b4ad02ebb68c757955cab305558998129a7de111ab852e7dcb"
+  ],
+  "blocks": [
+    {
+      "header": {
+        "version": 1,
+        "hashMerkleRoot": "e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887",
+        "acceptedIdMerkleRoot": "9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b",
+        "utxoCommitment": "236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c",
+        "timestamp": "1656450648874",
+        "bits": 455233226,
+        "nonce": "14797571275553019490",
+        "daaScore": "19984482",
+        "blueWork": "2d1b3f04f8a0dcd31",
+        "parents": [
+          {
+            "parentHashes": [
+              "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e"
+            ]
+          }
+        ],
+        "blueScore": "18483232",
+        "pruningPoint": "5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d"
+      },
+      "transactions": [
+        {
+          "inputs": [
+            {
+              "previousOutpoint": {
+                "transactionId": "string",
+                "index": 0
+              },
+              "signatureScript": "string",
+              "sigOpCount": 0,
+              "sequence": 0
+            }
+          ],
+          "outputs": [
+            {
+              "amount": 0,
+              "scriptPublicKey": {
+                "scriptPublicKey": "string",
+                "version": 0
+              },
+              "verboseData": {
+                "scriptPublicKeyType": "string",
+                "scriptPublicKeyAddress": "string"
+              }
+            }
+          ],
+          "subnetworkId": "string",
+          "payload": "string",
+          "verboseData": {
+            "transactionId": "string",
+            "hash": "string",
+            "computeMass": 0,
+            "blockHash": "string",
+            "blockTime": 0
+          },
+          "lockTime": 0,
+          "gas": 0,
+          "mass": 0,
+          "version": 0
+        }
+      ],
+      "verboseData": {
+        "hash": "18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699",
+        "difficulty": [
+          4102204523252.94
+        ],
+        "selectedParentHash": "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e",
+        "transactionIds": [
+          "533f8314bf772259fe517f53507a79ebe61c8c6a11748d93a0835551233b3311"
+        ],
+        "blueScore": "18483232",
+        "childrenHashes": [
+          "string"
+        ],
+        "mergeSetBluesHashes": [],
+        "mergeSetRedsHashes": [],
+        "isChainBlock": false
+      },
+      "extra": {
+        "color": "string",
+        "minerAddress": "string",
+        "minerInfo": "string"
+      }
+    }
+  ]
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+GET
+/blocks-from-bluescore
+Get Blocks From Bluescore
+
+Lists blocks of a given blueScore
+
+Parameters
+Try it out
+Name	Description
+blueScore
+integer
+(query)
+Default value : 43679173
+
+43679173
+includeTransactions
+boolean
+(query)
+Default value : false
+
+
+false
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "header": {
+      "version": 1,
+      "hashMerkleRoot": "e6641454e16cff4f232b899564eeaa6e480b66069d87bee6a2b2476e63fcd887",
+      "acceptedIdMerkleRoot": "9bab45b027a0b2b47135b6f6f866e5e4040fc1fdf2fe56eb0c90a603ce86092b",
+      "utxoCommitment": "236d5f9ffd19b317a97693322c3e2ae11a44b5df803d71f1ccf6c2393bc6143c",
+      "timestamp": "1656450648874",
+      "bits": 455233226,
+      "nonce": "14797571275553019490",
+      "daaScore": "19984482",
+      "blueWork": "2d1b3f04f8a0dcd31",
+      "parents": [
+        {
+          "parentHashes": [
+            "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e"
+          ]
+        }
+      ],
+      "blueScore": "18483232",
+      "pruningPoint": "5d32a9403273a34b6551b84340a1459ddde2ae6ba59a47987a6374340ba41d5d"
+    },
+    "transactions": [
+      {
+        "inputs": [
+          {
+            "previousOutpoint": {
+              "transactionId": "string",
+              "index": 0
+            },
+            "signatureScript": "string",
+            "sigOpCount": 0,
+            "sequence": 0
+          }
+        ],
+        "outputs": [
+          {
+            "amount": 0,
+            "scriptPublicKey": {
+              "scriptPublicKey": "string",
+              "version": 0
+            },
+            "verboseData": {
+              "scriptPublicKeyType": "string",
+              "scriptPublicKeyAddress": "string"
+            }
+          }
+        ],
+        "subnetworkId": "string",
+        "payload": "string",
+        "verboseData": {
+          "transactionId": "string",
+          "hash": "string",
+          "computeMass": 0,
+          "blockHash": "string",
+          "blockTime": 0
+        },
+        "lockTime": 0,
+        "gas": 0,
+        "mass": 0,
+        "version": 0
+      }
+    ],
+    "verboseData": {
+      "hash": "18c7afdf8f447ca06adb8b4946dc45f5feb1188c7d177da6094dfbc760eca699",
+      "difficulty": [
+        4102204523252.94
+      ],
+      "selectedParentHash": "580f65c8da9d436480817f6bd7c13eecd9223b37f0d34ae42fb17e1e9fda397e",
+      "transactionIds": [
+        "533f8314bf772259fe517f53507a79ebe61c8c6a11748d93a0835551233b3311"
+      ],
+      "blueScore": "18483232",
+      "childrenHashes": [
+        "string"
+      ],
+      "mergeSetBluesHashes": [],
+      "mergeSetRedsHashes": [],
+      "isChainBlock": false
+    },
+    "extra": {
+      "color": "string",
+      "minerAddress": "string",
+      "minerInfo": "string"
+    }
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+Kaspa transactions
+
+
+GET
+/transactions/{transactionId}
+Get Transaction
+
+
+POST
+/transactions/search
+Search For Transactions
+
+Search for transactions by transaction_ids or blue_score
+
+Parameters
+Try it out
+Name	Description
+fields
+string
+(query)
+Default value :
+
+fields
+resolve_previous_outpoints
+string
+(query)
+Use this parameter if you want to fetch the TransactionInput previous outpoint details. Light fetches only the address and amount. Full fetches the whole TransactionOutput and adds it into each TxInput.
+
+Available values : no, light, full
+
+Default value : no
+
+
+no
+acceptance
+string
+(query)
+Only used when searching using transactionIds
+
+Available values : accepted, rejected
+
+
+--
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "transactionIds": [
+    "string"
+  ],
+  "acceptingBlueScores": {
+    "gte": 0,
+    "lt": 0
+  }
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "subnetwork_id": "string",
+    "transaction_id": "string",
+    "hash": "string",
+    "mass": "string",
+    "payload": "string",
+    "block_hash": [
+      "string"
+    ],
+    "block_time": 0,
+    "is_accepted": true,
+    "accepting_block_hash": "string",
+    "accepting_block_blue_score": 0,
+    "accepting_block_time": 0,
+    "inputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "previous_outpoint_hash": "string",
+        "previous_outpoint_index": "string",
+        "previous_outpoint_resolved": {
+          "transaction_id": "string",
+          "index": 0,
+          "amount": 0,
+          "script_public_key": "string",
+          "script_public_key_address": "string",
+          "script_public_key_type": "string",
+          "accepting_block_hash": "string"
+        },
+        "previous_outpoint_address": "string",
+        "previous_outpoint_amount": 0,
+        "signature_script": "string",
+        "sig_op_count": "string"
+      }
+    ],
+    "outputs": [
+      {
+        "transaction_id": "string",
+        "index": 0,
+        "amount": 0,
+        "script_public_key": "string",
+        "script_public_key_address": "string",
+        "script_public_key_type": "string",
+        "accepting_block_hash": "string"
+      }
+    ]
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/transactions/acceptance
+Get Transaction Acceptance
+
+Given a list of transaction_ids, return whether each one is accepted and the accepting blue score.
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "transactionIds": [
+    "b9382bdee4aa364acf73eda93914eaae61d0e78334d1b8a637ab89ef5e224e41",
+    "1e098b3830c994beb28768f7924a38286cec16e85e9757e0dc3574b85f624c34",
+    "000ad5138a603aadc25cfcca6b6605d5ff47d8c7be594c9cdd199afa6dc76ac6"
+  ]
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+[
+  {
+    "transactionId": "b9382bdee4aa364acf73eda93914eaae61d0e78334d1b8a637ab89ef5e224e41",
+    "accepted": true,
+    "acceptingBlueScore": 0
+  }
+]
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/transactions
+Submit A New Transaction
+
+Parameters
+Try it out
+Name	Description
+replaceByFee
+boolean
+(query)
+Replace an existing transaction in the mempool
+
+Default value : false
+
+
+false
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "transaction": {
+    "version": 0,
+    "inputs": [
+      {
+        "previousOutpoint": {
+          "transactionId": "string",
+          "index": 0
+        },
+        "signatureScript": "string",
+        "sequence": 0,
+        "sigOpCount": 0
+      }
+    ],
+    "outputs": [
+      {
+        "amount": 0,
+        "scriptPublicKey": {
+          "version": 0,
+          "scriptPublicKey": "string"
+        }
+      }
+    ],
+    "lockTime": 0,
+    "subnetworkId": "string"
+  },
+  "allowOrphan": false
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "transactionId": "string",
+  "error": "string"
+}
+No links
+400	
+Bad Request
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "transactionId": "string",
+  "error": "string"
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+
+POST
+/transactions/mass
+Calculate Transaction Mass
+
+This function calculates and returns the mass of a transaction, which is essential for determining the minimum fee. The mass calculation takes into account the storage mass as defined in KIP-0009.
+
+Note: Be aware that if the transaction has a very low output amount or a high number of outputs, the mass can become significantly large.
+
+Parameters
+Try it out
+No parameters
+
+Request body
+
+application/json
+Example Value
+Schema
+{
+  "version": 0,
+  "inputs": [
+    {
+      "previousOutpoint": {
+        "transactionId": "string",
+        "index": 0
+      },
+      "signatureScript": "string",
+      "sequence": 0,
+      "sigOpCount": 0
+    }
+  ],
+  "outputs": [
+    {
+      "amount": 0,
+      "scriptPublicKey": {
+        "version": 0,
+        "scriptPublicKey": "string"
+      }
+    }
+  ],
+  "lockTime": 0,
+  "subnetworkId": "string"
+}
+Responses
+Code	Description	Links
+200	
+Successful Response
+
+Media type
+
+application/json
+Controls Accept header.
+Example Value
+Schema
+{
+  "mass": 0,
+  "storage_mass": 0,
+  "compute_mass": 0
+}
+No links
+422	
+Validation Error
+
+Media type
+
+application/json
+Example Value
+Schema
+{
+  "detail": [
+    {
+      "loc": [
+        "string",
+        0
+      ],
+      "msg": "string",
+      "type": "string"
+    }
+  ]
+}
+No links
+EXPERIMENTAL: Kaspa virtual chain
+
+
+GET
+/virtual-chain
+Get Virtual Chain Transactions
+
+
+Schemas

@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test Improved Kaspa Address Generation</title>
+    <style>
+        body { font-family: Arial, sans-serif; padding: 20px; background: #f0f0f0; }
+        .container { max-width: 800px; margin: 0 auto; background: white; padding: 20px; border-radius: 8px; }
+        .test-result { margin: 10px 0; padding: 10px; border-radius: 4px; }
+        .success { background: #d4edda; border: 1px solid #c3e6cb; color: #155724; }
+        .error { background: #f8d7da; border: 1px solid #f5c6cb; color: #721c24; }
+        .info { background: #d1ecf1; border: 1px solid #bee5eb; color: #0c5460; }
+        .address { font-family: monospace; background: #f8f9fa; padding: 5px; border-radius: 3px; }
+        button { background: #007bff; color: white; border: none; padding: 10px 20px; border-radius: 4px; cursor: pointer; margin: 5px; }
+        button:hover { background: #0056b3; }
+        #log { background: #f8f9fa; border: 1px solid #dee2e6; padding: 10px; border-radius: 4px; max-height: 400px; overflow-y: auto; font-family: monospace; font-size: 12px; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>🔧 Test Enhanced Kasia Address Generation with Upstream Features</h1>
+        
+        <div class="test-result info">
+            <strong>Goal:</strong> Generate unique, format-valid Kaspa addresses with enhanced security features that always have zero balance and are accepted by the API (400 response, not 422). Now includes support for standard/legacy derivation paths and testnet/mainnet networks.
+        </div>
+        
+        <button onclick="testAddressGeneration()">🎯 Test Enhanced Address Generation</button>
+        <button onclick="testMultipleAddresses()">🔄 Test Multiple Addresses & Migration</button>
+        <button onclick="testSelfTest()">🧪 Run Self-Test</button>
+        <button onclick="clearLog()">🧹 Clear Log</button>
+        
+        <div id="results"></div>
+        <div id="log"></div>
+    </div>
+
+    <script src="kasia-security-helper.js"></script>
+    <script src="kasia-crypto-standalone.js"></script>
+    <script>
+        function log(message) {
+            const logDiv = document.getElementById('log');
+            const timestamp = new Date().toLocaleTimeString();
+            logDiv.innerHTML += `[${timestamp}] ${message}\n`;
+            logDiv.scrollTop = logDiv.scrollHeight;
+        }
+
+        function clearLog() {
+            document.getElementById('log').innerHTML = '';
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function testAddressGeneration() {
+            try {
+                log('🚀 Starting enhanced address generation test...');
+                
+                // Initialize enhanced crypto system
+                const kasiaWallet = new KasiaStandaloneCrypto();
+                log('✅ Enhanced crypto system initialized');
+                
+                // Test both standard and legacy derivation types
+                for (const derivationType of ['standard', 'legacy']) {
+                    log(`\n🔍 Testing ${derivationType} derivation...`);
+                    
+                    // Generate a test wallet
+                    const wallet = await kasiaWallet.createWallet(derivationType);
+                    log(`📝 Generated wallet with address: ${wallet.address}`);
+                    log(`📊 Derivation type: ${wallet.derivationType}, Network: ${wallet.networkType}`);
+                    
+                    // Validate address format
+                    const isValidFormat = kasiaWallet.isValidKaspaAddress(wallet.address);
+                    log(`🔍 Address format validation: ${isValidFormat ? 'VALID' : 'INVALID'}`);
+                    
+                    // Check address length
+                    const addressLength = wallet.address.length;
+                    log(`📏 Address length: ${addressLength} characters`);
+                    
+                    // Check if it starts with kaspa:
+                    const startsWithKaspa = wallet.address.startsWith('kaspa:');
+                    log(`🏷️ Starts with 'kaspa:': ${startsWithKaspa}`);
+                    
+                    // Check character set (should only contain a-z, 0-9 after kaspa:)
+                    const addressPart = wallet.address.substring(6);
+                    const validChars = /^[a-z0-9]+$/.test(addressPart);
+                    log(`🔤 Valid character set: ${validChars}`);
+                    
+                    // Test with Kaspa API
+                    log('🌐 Testing with Kaspa API...');
+                    try {
+                        const response = await fetch(`https://api.kaspa.org/addresses/${wallet.address}/balance`);
+                        log(`📡 API Response Status: ${response.status}`);
+                        
+                        if (response.status === 400) {
+                            log('✅ PERFECT! API returned 400 - address is format-valid but unused (zero balance expected)');
+                        } else if (response.status === 422) {
+                            log('❌ API returned 422 - address format is invalid');
+                        } else if (response.status === 200) {
+                            const data = await response.json();
+                            log(`⚠️ API returned 200 - this address exists with balance: ${data.balance || 0}`);
+                        } else {
+                            log(`ℹ️ API returned unexpected status: ${response.status}`);
+                        }
+                    } catch (error) {
+                        log(`❌ API test failed: ${error.message}`);
+                    }
+                    
+                    // Display results for this derivation type
+                    const resultsDiv = document.getElementById('results');
+                    const existingContent = resultsDiv.innerHTML;
+                    resultsDiv.innerHTML = existingContent + `
+                        <div class="test-result ${isValidFormat && startsWithKaspa && validChars ? 'success' : 'error'}">
+                            <strong>Generated Address (${derivationType}):</strong><br>
+                            <div class="address">${wallet.address}</div>
+                            <br>
+                            <strong>Validation Results:</strong><br>
+                            • Format Valid: ${isValidFormat ? '✅' : '❌'}<br>
+                            • Length: ${addressLength} chars ${addressLength >= 67 && addressLength <= 69 ? '✅' : '❌'}<br>
+                            • Prefix: ${startsWithKaspa ? '✅' : '❌'}<br>
+                            • Character Set: ${validChars ? '✅' : '❌'}<br>
+                            • Derivation: ${wallet.derivationType} ✅<br>
+                            • Network: ${wallet.networkType} ✅
+                        </div>
+                    `;
+                }
+                
+            } catch (error) {
+                log(`❌ Test failed: ${error.message}`);
+                console.error('Test error:', error);
+            }
+        }
+
+        async function testMultipleAddresses() {
+            try {
+                log('🔄 Testing multiple enhanced address generation...');
+                
+                const kasiaWallet = new KasiaStandaloneCrypto();
+                
+                const addresses = new Set();
+                let validCount = 0;
+                const totalTests = 10; // Test more addresses
+                
+                // Test multiple derivation types and networks
+                const testConfigs = [
+                    { derivationType: 'standard', networkType: 'mainnet' },
+                    { derivationType: 'legacy', networkType: 'mainnet' },
+                    { derivationType: 'standard', networkType: 'testnet' },
+                    { derivationType: 'legacy', networkType: 'testnet' }
+                ];
+                
+                for (let i = 0; i < totalTests; i++) {
+                    const config = testConfigs[i % testConfigs.length];
+                    const wallet = await kasiaWallet.createWallet(config.derivationType, config.networkType);
+                    const address = wallet.address;
+                    
+                    // Check uniqueness
+                    if (addresses.has(address)) {
+                        log(`❌ Duplicate address generated: ${address}`);
+                    } else {
+                        addresses.add(address);
+                        
+                        // Validate format
+                        const isValid = kasiaWallet.isValidKaspaAddress(address);
+                        if (isValid) {
+                            validCount++;
+                            log(`✅ Address ${i + 1}: Valid and unique (${config.derivationType}/${config.networkType})`);
+                        } else {
+                            log(`❌ Address ${i + 1}: Invalid format (${config.derivationType}/${config.networkType})`);
+                        }
+                    }
+                }
+                
+                log(`📊 Results: ${validCount}/${totalTests} addresses are valid and unique`);
+                log(`🎯 Unique addresses generated: ${addresses.size}/${totalTests}`);
+                
+                // Test migration functionality
+                log('\n🔄 Testing wallet migration...');
+                try {
+                    const testPrivateKey = kasiaWallet.bytesToHex(kasiaWallet.generatePrivateKey());
+                    const migration = await kasiaWallet.migrateWallet(testPrivateKey);
+                    
+                    log(`📝 Legacy address: ${migration.legacy.address}`);
+                    log(`📝 Standard address: ${migration.standard.address}`);
+                    log(`✅ Migration test successful`);
+                } catch (migrationError) {
+                    log(`❌ Migration test failed: ${migrationError.message}`);
+                }
+                
+                // Test one mainnet address with API to verify it's not a live address
+                const mainnetAddresses = Array.from(addresses).filter(addr => addr.startsWith('kaspa:'));
+                if (mainnetAddresses.length > 0) {
+                    const testAddress = mainnetAddresses[0];
+                    log(`🌐 Testing mainnet address with API: ${testAddress}`);
+                    
+                    try {
+                        const response = await fetch(`https://api.kaspa.org/addresses/${testAddress}/balance`);
+                        log(`📡 API Status: ${response.status} ${response.status === 400 ? '(Expected - unused address)' : ''}`);
+                    } catch (error) {
+                        log(`❌ API test failed: ${error.message}`);
+                    }
+                }
+                
+            } catch (error) {
+                log(`❌ Multiple address test failed: ${error.message}`);
+                console.error('Multiple test error:', error);
+            }
+        }
+
+        async function testSelfTest() {
+            try {
+                log('🧪 Running comprehensive self-test...');
+                
+                const kasiaWallet = new KasiaStandaloneCrypto();
+                const result = await kasiaWallet.runSelfTest();
+                
+                if (result.success) {
+                    log('✅ Self-test PASSED');
+                    log(`📊 Security features enabled: ${result.securityFeatures ? 'YES' : 'NO'}`);
+                    log(`🎯 Uniqueness test: ${result.uniquenessTest ? 'PASSED' : 'FAILED'}`);
+                    
+                    // Display some sample results
+                    if (result.results && result.results.length > 0) {
+                        log('\n📝 Sample addresses generated:');
+                        result.results.slice(0, 4).forEach((res, i) => {
+                            log(`${i + 1}. ${res.networkType}/${res.derivationType}: ${res.address}`);
+                        });
+                    }
+                } else {
+                    log(`❌ Self-test FAILED: ${result.error}`);
+                }
+                
+                return result;
+            } catch (error) {
+                log(`❌ Self-test error: ${error.message}`);
+                return { success: false, error: error.message };
+            }
+        }
+
+        // Auto-start test
+        document.addEventListener('DOMContentLoaded', async () => {
+            log('🎯 Enhanced Kasia crypto system ready');
+            log('🔒 Security helper loaded: ' + (window.KasiaSecurityHelper ? 'YES' : 'NO'));
+            
+            // Run initial self-test
+            await testSelfTest();
+        });
+    </script>
+</body>
+</html>
