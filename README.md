@@ -429,6 +429,7 @@ To contribute to KasOS development:
 2. Create feature branches
 3. Test thoroughly across browsers
 4. Submit pull requests with detailed descriptions
+5. Donate to help the developer build a better Web3 experience for you. kaspa:qyppcj89ldqu0jnc0rcrzv3u0f2405raq2nnha9ptqqtfylaf7laaccqt85umkl
 
 ## License
 KasOS is open-source software. See LICENSE file for details.
